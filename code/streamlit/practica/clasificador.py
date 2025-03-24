@@ -32,11 +32,6 @@ if uploaded_file is not None:
     input_tensor = preprocess(image)
     input_batch = input_tensor.unsqueeze(0)  # Añadir dimensión de batch
 
-    # Opcional: mover a GPU si está disponible
-    if torch.cuda.is_available():
-        input_batch = input_batch.to("cuda")
-        model.to("cuda")
-    
     # Clasificar la imagen sin calcular gradientes
     with torch.no_grad():
         output = model(input_batch)
