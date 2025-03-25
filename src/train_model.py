@@ -24,7 +24,7 @@ def main():
     train_dir = os.path.join("..", "data", "training")
     valid_dir = os.path.join("..", "data", "validation")
 
-    batch_size = 32
+    batch_size = 128
     img_size = 224  # (ej. ResNet requiere 224x224)
     
     train_loader, valid_loader, num_classes = load_data(train_dir, valid_dir, batch_size=batch_size, img_size=img_size)
