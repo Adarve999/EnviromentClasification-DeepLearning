@@ -5,6 +5,8 @@ import torch
 import torchvision
 import torch.nn as nn
 import torch.optim as optim
+import wandb
+import datetime
 from utils.cnn import CNN, load_data
 
 def main():
@@ -23,15 +25,15 @@ def main():
 
     train_dir = os.path.join("..", "data", "training")
     valid_dir = os.path.join("..", "data", "validation")
-
     batch_size = 128
-    img_size = 224  # (ej. ResNet requiere 224x224)
-    
+    img_size = 224  # Por ejemplo, ResNet requiere 224x224
+
     train_loader, valid_loader, num_classes = load_data(train_dir, valid_dir, batch_size=batch_size, img_size=img_size)
     print(f"\nSe detectaron {num_classes} clases en el dataset.")
 
+    learning_rate = 1e-3 
     model = CNN(chosen_model, num_classes)
-    optimizer = optim.Adam(model.parameters(), lr=1e-4)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.CrossEntropyLoss()
 
     try:
@@ -40,12 +42,25 @@ def main():
         print("Valor de época inválido. Se utilizará 1 época por defecto.")
         epochs = 1
 
-    print("\nIniciando entrenamiento...\n")
-    model.train_model(train_loader, valid_loader, optimizer, criterion, epochs)
+    run_name = f"{selected_model}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    wandb.init(
+        entity="machinelearningicai2025",
+        project="Weight&Bias",
+        name=run_name,
+        config={"model": selected_model, "epochs": epochs, "lr": learning_rate}
+    )
 
-    save_filename = f"{selected_model}-{epochs}epochs"
-    model.save_model(save_filename)
-    print(f"\nEntrenamiento finalizado. Modelo guardado como '{save_filename}'.")
+    print("\nIniciando entrenamiento...\n")
+    try:
+        history = model.train_model(train_loader, valid_loader, optimizer, criterion, epochs)
+    except KeyboardInterrupt:
+        print("Entrenamiento cancelado por el usuario. Guardando modelo con los pesos actuales...")
+        wandb.log({"message": "Entrenamiento cancelado por el usuario"})
+    finally:
+        save_filename = f"{selected_model}-{epochs}epochs"
+        model.save_model(save_filename)
+        print(f"\nModelo guardado como '{save_filename}'.")
+        wandb.finish()
 
 if __name__ == "__main__":
     main()

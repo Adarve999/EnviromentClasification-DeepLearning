@@ -9,6 +9,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from tempfile import TemporaryDirectory
 import json
+import wandb
 
 class CNN(nn.Module):
     """Convolutional Neural Network model for image classification."""
@@ -125,6 +126,14 @@ class CNN(nn.Module):
                 print(f'Epoch {epoch + 1}/{epochs} - '
                         f'Validation Loss: {valid_loss:.4f}, '
                         f'Validation Accuracy: {valid_accuracy:.4f}')
+                
+                
+                wandb.log({
+                "train_loss": train_loss,
+                "train_accuracy": train_accuracy,
+                "valid_loss": valid_loss,
+                "valid_accuracy": valid_accuracy
+                })
                 
                 if epoch % nepochs_to_save == 0:
                     if valid_accuracy > best_accuracy:
