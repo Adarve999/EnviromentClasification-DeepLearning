@@ -25,7 +25,7 @@ def main():
 
     train_dir = os.path.join("..", "data", "training")
     valid_dir = os.path.join("..", "data", "validation")
-    batch_size = 128
+    batch_size = 32
     img_size = 224  # Por ejemplo, ResNet requiere 224x224
 
     train_loader, valid_loader, num_classes = load_data(train_dir, valid_dir, batch_size=batch_size, img_size=img_size)
@@ -33,6 +33,11 @@ def main():
 
     learning_rate = 1e-3 
     model = CNN(chosen_model, num_classes)
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"\nUsando dispositivo: {device}")
+    model = model.to(device)
+    
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.CrossEntropyLoss()
 
@@ -52,7 +57,7 @@ def main():
 
     print("\nIniciando entrenamiento...\n")
     try:
-        history = model.train_model(train_loader, valid_loader, optimizer, criterion, epochs)
+        history = model.train_model(train_loader, valid_loader, optimizer, criterion, epochs, device=device)
     except KeyboardInterrupt:
         print("Entrenamiento cancelado por el usuario. Guardando modelo con los pesos actuales...")
         wandb.log({"message": "Entrenamiento cancelado por el usuario"})

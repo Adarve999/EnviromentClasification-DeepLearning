@@ -66,7 +66,8 @@ class CNN(nn.Module):
                     optimizer, 
                     criterion, 
                     epochs, 
-                    nepochs_to_save=10):
+                    nepochs_to_save=10, 
+                    device=None):
         """Train the model and save the best one based on validation accuracy.
         
         Args:
@@ -76,10 +77,14 @@ class CNN(nn.Module):
             criterion: Loss function to use during training.
             epochs: Number of epochs to train the model.
             nepochs_to_save: Number of epochs to wait before saving the model.
-
+            device: The device to run the training on (GPU/CPU). If None, it will be auto-detected.
+            
         Returns:
             history: A dictionary with the training history.
         """
+        if device is None:
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
         with TemporaryDirectory() as temp_dir:
             best_model_path = os.path.join(temp_dir, 'best_model.pt')
             best_accuracy = 0.0
@@ -90,59 +95,68 @@ class CNN(nn.Module):
                 self.train()
                 train_loss = 0.0
                 train_accuracy = 0.0
+                total_train = 0
                 for images, labels in train_loader:
+                    # Mover imágenes y etiquetas al dispositivo
+                    images = images.to(device)
+                    labels = labels.to(device)
                     optimizer.zero_grad()
                     outputs = self(images)
                     loss = criterion(outputs, labels)
                     loss.backward()
                     optimizer.step()
-                    train_loss += loss.item()
+                    train_loss += loss.item() * images.size(0)
                     train_accuracy += (outputs.argmax(1) == labels).sum().item()
+                    total_train += labels.size(0)
 
-                train_loss /= len(train_loader)
-                train_accuracy /= len(train_loader.dataset)
+                train_loss /= total_train
+                train_accuracy /= total_train
                 history['train_loss'].append(train_loss)
                 history['train_accuracy'].append(train_accuracy)
 
                 print(f'Epoch {epoch + 1}/{epochs} - '
-                      f'Train Loss: {train_loss:.4f}, '
-                      f'Train Accuracy: {train_accuracy:.4f}')
-                
+                    f'Train Loss: {train_loss:.4f}, '
+                    f'Train Accuracy: {train_accuracy:.4f}')
                 
                 self.eval()
                 valid_loss = 0.0
                 valid_accuracy = 0.0
-                for images, labels in valid_loader:
-                    outputs = self(images)
-                    loss = criterion(outputs, labels)
-                    valid_loss += loss.item()
-                    valid_accuracy += (outputs.argmax(1) == labels).sum().item()
+                total_valid = 0
+                with torch.no_grad():
+                    for images, labels in valid_loader:
+                        images = images.to(device)
+                        labels = labels.to(device)
+                        outputs = self(images)
+                        loss = criterion(outputs, labels)
+                        valid_loss += loss.item() * images.size(0)
+                        valid_accuracy += (outputs.argmax(1) == labels).sum().item()
+                        total_valid += labels.size(0)
 
-                valid_loss /= len(valid_loader)
-                valid_accuracy /= len(valid_loader.dataset)
+                valid_loss /= total_valid
+                valid_accuracy /= total_valid
                 history['valid_loss'].append(valid_loss)
                 history['valid_accuracy'].append(valid_accuracy)
 
                 print(f'Epoch {epoch + 1}/{epochs} - '
-                        f'Validation Loss: {valid_loss:.4f}, '
-                        f'Validation Accuracy: {valid_accuracy:.4f}')
-                
+                    f'Validation Loss: {valid_loss:.4f}, '
+                    f'Validation Accuracy: {valid_accuracy:.4f}')
                 
                 wandb.log({
-                "train_loss": train_loss,
-                "train_accuracy": train_accuracy,
-                "valid_loss": valid_loss,
-                "valid_accuracy": valid_accuracy
+                    "train_loss": train_loss,
+                    "train_accuracy": train_accuracy,
+                    "valid_loss": valid_loss,
+                    "valid_accuracy": valid_accuracy
                 })
                 
                 if epoch % nepochs_to_save == 0:
                     if valid_accuracy > best_accuracy:
                         best_accuracy = valid_accuracy
                         torch.save(self.state_dict(), best_model_path)
-                
+            
             torch.save(self.state_dict(), best_model_path)    
             self.load_state_dict(torch.load(best_model_path))
             return history
+
         
     def predict(self, data_loader):
         """Predict the classes of the images in the data loader.
