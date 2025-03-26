@@ -25,13 +25,13 @@ def main():
 
     train_dir = os.path.join("..", "data", "training")
     valid_dir = os.path.join("..", "data", "validation")
+    learning_rate = 1e-4 
     batch_size = 32
     img_size = 224  # Por ejemplo, ResNet requiere 224x224
 
     train_loader, valid_loader, num_classes = load_data(train_dir, valid_dir, batch_size=batch_size, img_size=img_size)
     print(f"\nSe detectaron {num_classes} clases en el dataset.")
 
-    learning_rate = 1e-3 
     model = CNN(chosen_model, num_classes)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

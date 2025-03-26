@@ -2,18 +2,37 @@ import streamlit as st
 import os
 import torch
 import torchvision
-import torchvision.transforms as transforms
+import random
 from PIL import Image
-from utils.cnn import CNN, load_model_weights
+from torchvision import transforms
+from utils.cnn import CNN, load_data, load_model_weights
 
-st.set_page_config(page_title="Clasificador de Imágenes", layout="wide")
-st.title("Clasificador de Imágenes - Selección de Modelo")
-st.write("Carga una imagen y selecciona un modelo entrenado para clasificarla.")
+st.set_page_config(page_title="Clasificador de Imágenes (Validación Aleatoria)", layout="wide")
+st.title("Clasificador de Imágenes - Predicción de UNA sola imagen aleatoria del conjunto de validación")
 
-# Carpeta donde se encuentran los modelos guardados (archivos .pt o .pth con state_dict)
+st.write("""
+Este ejemplo toma **una sola** imagen aleatoria del conjunto de validación y muestra la clase que el modelo predice para esa imagen,
+sin predecir todo el dataset.
+""")
+
+# Rutas de datos
+train_dir = '../data/training'
+valid_dir = '../data/validation'
+batch_size = 32
+img_size = 224  # Por ejemplo, ResNet requiere 224x224
+
+# Cargar datos y extraer clases
+train_loader, valid_loader, num_classes = load_data(
+    train_dir, 
+    valid_dir, 
+    batch_size=batch_size, 
+    img_size=img_size
+)
+classnames = train_loader.dataset.classes
+
+# Carpeta de modelos
 MODELS_DIR = "models"
 model_files = [f for f in os.listdir(MODELS_DIR) if f.endswith(".pt") or f.endswith(".pth")]
-
 if not model_files:
     st.error("No se encontraron modelos en la carpeta 'models'.")
     st.stop()
@@ -21,77 +40,51 @@ if not model_files:
 # Dropdown para seleccionar el modelo
 selected_model_file = st.selectbox("Selecciona el modelo", model_files)
 
-# Se extrae el identificador del modelo sin extensión
-model_identifier = os.path.splitext(selected_model_file)[0]
+# Botón para escoger una imagen aleatoria de validación y predecirla
+if st.button("Obtener imagen aleatoria y predecir"):
+    # a) Seleccionar una imagen aleatoria del conjunto de validación
+    valid_samples = valid_loader.dataset.samples  # lista de (ruta, clase)
+    rand_index = random.choice(range(len(valid_samples)))
+    image_path, _ = valid_samples[rand_index]
+    
+    # Cargar la imagen con PIL
+    image = Image.open(image_path).convert("RGB")
+    st.image(image, caption=f"Imagen aleatoria: {os.path.basename(image_path)}", width=300)
 
-# Definir las clases personalizadas (en este caso, 15 clases)
-custom_classes = [
-    'Bedroom',
-    'Coast',
-    'Forest',
-    'Highway',
-    'Industrial',
-    'Inside city',
-    'Kitchen',
-    'Living room',
-    'Mountain',
-    'Office',
-    'Open country',
-    'Store',
-    'Street',
-    'Suburb',
-    'Tall building'
-]
-num_classes = len(custom_classes)
+    # Preprocesamiento consistente con tu entrenamiento
+    # (en valid_loader, usas transforms.Resize y transforms.ToTensor)
+    transform = transforms.Compose([
+        transforms.Resize((img_size, img_size)),
+        transforms.ToTensor()
+    ])
+    input_tensor = transform(image).unsqueeze(0)  # añadir batch dimension
 
-# Drag & Drop para cargar la imagen
-uploaded_file = st.file_uploader("Carga una imagen (jpg, jpeg, png)", type=["jpg", "jpeg", "png"])
+    # Configurar el dispositivo (GPU si está disponible)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    st.write(f"Usando dispositivo: {device}")
 
-if uploaded_file is not None:
-    # Cargar la imagen
-    image = Image.open(uploaded_file).convert("RGB")
-    # Previsualización de tamaño reducido (por ejemplo, ancho=300 px)
-    st.image(image, caption="Imagen cargada", width=300)
+    # Extraer nombre del modelo y la arquitectura
+    model_identifier = os.path.splitext(selected_model_file)[0]
+    arch_name = selected_model_file.split("-")[0]
+    if arch_name not in torchvision.models.list_models(module=torchvision.models):
+        st.error(f"No se encontró la arquitectura '{arch_name}' en torchvision.models.")
+        st.stop()
 
-    # Botón para iniciar la predicción
-    if st.button("Realizar predicción"):
-        st.write("Realizando predicción...")
+    # Cargar arquitectura base con pesos (o pretrained=True)
+    base_model = torchvision.models.__dict__[arch_name](weights="DEFAULT")
+    my_trained_model = CNN(base_model, num_classes)
+    my_trained_model.to(device)
 
-        # Preprocesar la imagen: redimensionar a 224x224 y normalizar según ImageNet
-        transform = transforms.Compose([
-            transforms.Resize((224, 224)),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                 std=[0.229, 0.224, 0.225])
-        ])
-        input_tensor = transform(image)
-        input_batch = input_tensor.unsqueeze(0)  # Añadir dimensión de batch
+    # Cargar los pesos entrenados
+    model_weights = load_model_weights(model_identifier)
+    my_trained_model.load_state_dict(model_weights)
+    my_trained_model.eval()
 
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        st.write(f"Usando dispositivo: {device}")
+    # b) Predecir SOLO ESA IMAGEN con tu método predict_ImageOnly
+    input_tensor = input_tensor.to(device)
+    predicted_labels = my_trained_model.predict_ImageOnly(input_tensor)
+    predicted_index = predicted_labels[0]
+    predicted_label = classnames[predicted_index]
 
-        arch_name = selected_model_file.split("-")[0]
-        if arch_name not in torchvision.models.list_models(module=torchvision.models):
-            st.error(f"No se encontró la arquitectura '{arch_name}' en torchvision.models.")
-            st.stop()
-
-        base_model = torchvision.models.__dict__[arch_name](weights="DEFAULT")
-        my_trained_model = CNN(base_model, num_classes)
-        my_trained_model.to(device)
-
-        model_weights = load_model_weights(model_identifier)
-        my_trained_model.load_state_dict(model_weights)
-        my_trained_model.eval()
-
-        with torch.no_grad():
-            output = my_trained_model(input_batch.to(device))
-        probabilities = torch.nn.functional.softmax(output[0], dim=0)
-        top5_prob, top5_catid = torch.topk(probabilities, 5)
-
-        st.subheader("Resultados de Clasificación:")
-        for i in range(top5_prob.size(0)):
-            if top5_catid[i] < num_classes:
-                label = custom_classes[top5_catid[i]]
-            else:
-                label = f"Clase desconocida ({top5_catid[i].item()})"
-            st.write(f"**{label}**: {top5_prob[i].item()*100:.2f}%")
+    st.subheader("Resultado de Clasificación:")
+    st.write(f"La imagen ha sido clasificada como: **{predicted_label}**")

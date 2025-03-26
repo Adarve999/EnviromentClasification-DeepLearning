@@ -173,6 +173,21 @@ class CNN(nn.Module):
             outputs = self(images)
             predicted_labels.extend(outputs.argmax(1).tolist())
         return predicted_labels
+    
+    def predict_ImageOnly(self, images):
+        """Predict the classes of the images in the data loader.
+
+        Args:
+            data_loader: DataLoader with the images to predict.
+
+        Returns:
+            predicted_labels: Predicted classes.
+        """
+        self.eval()
+        predicted_labels = []
+        outputs = self(images)
+        predicted_labels.extend(outputs.argmax(1).tolist())
+        return predicted_labels    
         
     def save_model(self, filename: str):
         """Save the model to disk.
