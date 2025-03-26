@@ -75,7 +75,7 @@ if uploaded_file is not None:
         my_trained_model.to(device)
 
         # Cargar los pesos entrenados
-        model_weights = load_model_weights(model_identifier)
+        model_weights = load_model_weights(model_identifier, device=device)
         my_trained_model.load_state_dict(model_weights)
         my_trained_model.eval()
 

@@ -266,7 +266,7 @@ def load_data(train_dir, valid_dir, batch_size, img_size):
 
     return train_loader, valid_loader, len(train_data.classes)
 
-def load_model_weights(filename: str):
+def load_model_weights(filename: str, device: torch.device = torch.device('cpu')):
         """Load a model from disk.
         IMPORTANT: The model must be initialized before loading the weights.
         Args:
@@ -276,5 +276,5 @@ def load_model_weights(filename: str):
         filename = os.path.join('models', filename)
 
         # Load the model
-        state_dict = torch.load(filename+'.pt')
+        state_dict = torch.load(filename+'.pt', map_location=device)
         return state_dict
