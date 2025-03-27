@@ -67,9 +67,11 @@ class CNN(nn.Module):
                     criterion, 
                     epochs, 
                     nepochs_to_save=10, 
-                    device=None):
-        """Train the model and save the best one based on validation accuracy.
-        
+                    device=None,
+                    scheduler=None):
+        """
+        Train the model and save the best one based on validation accuracy.
+
         Args:
             train_loader: DataLoader with training data.
             valid_loader: DataLoader with validation data.
@@ -77,14 +79,14 @@ class CNN(nn.Module):
             criterion: Loss function to use during training.
             epochs: Number of epochs to train the model.
             nepochs_to_save: Number of epochs to wait before saving the model.
-            device: The device to run the training on (GPU/CPU). If None, it will be auto-detected.
-            
+            device: Device (CPU/GPU). If None, detect automatically.
+            scheduler: Optional LR scheduler, e.g. OneCycleLR.
+
         Returns:
-            history: A dictionary with the training history.
+            history: Dictionary with training history.
         """
         if device is None:
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        
         with TemporaryDirectory() as temp_dir:
             best_model_path = os.path.join(temp_dir, 'best_model.pt')
             best_accuracy = 0.0
@@ -97,14 +99,18 @@ class CNN(nn.Module):
                 train_accuracy = 0.0
                 total_train = 0
                 for images, labels in train_loader:
-                    # Mover imágenes y etiquetas al dispositivo
                     images = images.to(device)
                     labels = labels.to(device)
+
                     optimizer.zero_grad()
                     outputs = self(images)
                     loss = criterion(outputs, labels)
                     loss.backward()
                     optimizer.step()
+
+                    if scheduler is not None:
+                        scheduler.step()
+
                     train_loss += loss.item() * images.size(0)
                     train_accuracy += (outputs.argmax(1) == labels).sum().item()
                     total_train += labels.size(0)
@@ -117,7 +123,8 @@ class CNN(nn.Module):
                 print(f'Epoch {epoch + 1}/{epochs} - '
                     f'Train Loss: {train_loss:.4f}, '
                     f'Train Accuracy: {train_accuracy:.4f}')
-                
+
+                # Validación
                 self.eval()
                 valid_loss = 0.0
                 valid_accuracy = 0.0
@@ -140,19 +147,19 @@ class CNN(nn.Module):
                 print(f'Epoch {epoch + 1}/{epochs} - '
                     f'Validation Loss: {valid_loss:.4f}, '
                     f'Validation Accuracy: {valid_accuracy:.4f}')
-                
+
                 wandb.log({
                     "train_loss": train_loss,
                     "train_accuracy": train_accuracy,
                     "valid_loss": valid_loss,
                     "valid_accuracy": valid_accuracy
                 })
-                
+
                 if epoch % nepochs_to_save == 0:
                     if valid_accuracy > best_accuracy:
                         best_accuracy = valid_accuracy
                         torch.save(self.state_dict(), best_model_path)
-            
+
             torch.save(self.state_dict(), best_model_path)    
             self.load_state_dict(torch.load(best_model_path))
             return history
