@@ -39,8 +39,10 @@ selected_model_file = st.selectbox("Selecciona el modelo", model_files)
 uploaded_file = st.file_uploader("Carga una imagen (jpg, jpeg, png)", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    image = Image.open(uploaded_file).convert("RGB")
+    image = Image.open(uploaded_file)
     st.image(image, caption="Imagen cargada", width=300)
+    gray_image = image.convert("L")
+    image = gray_image.convert("RGB")
     
     if st.button("Realizar predicción"):
         st.write("Realizando predicción...")
