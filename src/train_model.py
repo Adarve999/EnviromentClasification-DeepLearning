@@ -30,21 +30,19 @@ def main():
     # Por ejemplo, Inception requiere 299×299
     # Por ejemplo, EfficientNet requiere 384×384
     img_size = 224
-    learning_rate = 1e-3
-    
-    batch_size = 64
+    learning_rate = 1e-4
+    unfreeze_layer = 9
+    batch_size = 32
 
     train_loader, valid_loader, num_classes = load_data(train_dir, valid_dir, batch_size=batch_size, img_size=img_size)
     print(f"\nSe detectaron {num_classes} clases en el dataset.")
 
-    model = CNN(chosen_model, num_classes)
+    model = CNN(chosen_model, num_classes,unfreezed_layers=unfreeze_layer)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"\nUsando dispositivo: {device}")
     model = model.to(device)
     
-    # weight_decayed =1e-5
-    # optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decayed)
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.CrossEntropyLoss()
 
@@ -54,17 +52,7 @@ def main():
         print("Valor de época inválido. Se utilizará 1 época por defecto.")
         epochs = 1
 
-    # steps_per_epoch = len(train_loader)
-    # scheduler = OneCycleLR(
-    #     optimizer=optimizer,
-    #     max_lr=learning_rate,
-    #     steps_per_epoch=steps_per_epoch,
-    #     epochs=epochs,
-    #     pct_start=0.3,
-    #     anneal_strategy='cos'
-    # )
-
-    run_name = f"{selected_model}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    run_name = f"{selected_model}_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}"
     wandb.init(
         entity="machinelearningicai2025",
         project="Weight&Bias",
@@ -79,7 +67,7 @@ def main():
         print("Entrenamiento cancelado por el usuario. Guardando modelo con los pesos actuales...")
         wandb.log({"message": "Entrenamiento cancelado por el usuario"})
     finally:
-        save_filename = f"{selected_model}-{epochs}epochs"
+        save_filename = f"{selected_model}-{epochs}epochs-Lr{learning_rate}-UL{unfreeze_layer}"
         model.save_model(save_filename)
         print(f"\nModelo guardado como '{save_filename}'.")
         wandb.finish()
