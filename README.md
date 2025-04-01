@@ -26,4 +26,3 @@ print(torch.cuda.is_available())
 - resnext101_64x4d
 - regnet_y_32gf
 - regnet_y_128gf
-- vit_l_16

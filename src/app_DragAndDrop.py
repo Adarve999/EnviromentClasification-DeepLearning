@@ -63,7 +63,7 @@ if uploaded_file is not None:
             st.stop()
 
         if("regnet" in model_identifier):
-            weights="IMAGENET1K_SWAG_LINEAR_V1"
+            weights="IMAGENET1K_SWAG_E2E_V1"
         else:
             weights="DEFAULT"
             
