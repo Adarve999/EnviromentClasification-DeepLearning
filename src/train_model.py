@@ -31,7 +31,7 @@ def main():
     # Por ejemplo, EfficientNet requiere 384×384
     img_size = 224
     learning_rate = 1e-4
-    unfreeze_layer = 9
+    unfreeze_layer = 7
     batch_size = 32
 
     train_loader, valid_loader, num_classes = load_data(train_dir, valid_dir, batch_size=batch_size, img_size=img_size)

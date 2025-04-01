@@ -62,7 +62,12 @@ if uploaded_file is not None:
             st.error(f"No se encontró la arquitectura '{arch_name}' en torchvision.models.")
             st.stop()
 
-        base_model = torchvision.models.__dict__[arch_name](weights="DEFAULT")
+        if("regnet" in model_identifier):
+            weights="IMAGENET1K_SWAG_LINEAR_V1"
+        else:
+            weights="DEFAULT"
+            
+        base_model = torchvision.models.__dict__[arch_name](weights=weights)
         my_trained_model = CNN(base_model, num_classes)
         my_trained_model.to(device)
 
