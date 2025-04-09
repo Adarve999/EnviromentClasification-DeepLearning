@@ -15,13 +15,11 @@ Este ejemplo toma **una sola** imagen aleatoria del conjunto de validación y mu
 sin predecir todo el dataset.
 """)
 
-# Rutas de datos
 train_dir = '../data/training'
 valid_dir = '../data/validation'
 batch_size = 32
-img_size = 224  # Por ejemplo, ResNet requiere 224x224
+img_size = 224
 
-# Cargar datos y extraer clases
 train_loader, valid_loader, num_classes = load_data(
     train_dir, 
     valid_dir, 
@@ -30,57 +28,50 @@ train_loader, valid_loader, num_classes = load_data(
 )
 classnames = train_loader.dataset.classes
 
-# Carpeta de modelos
 MODELS_DIR = "models"
 model_files = [f for f in os.listdir(MODELS_DIR) if f.endswith(".pt") or f.endswith(".pth")]
 if not model_files:
     st.error("No se encontraron modelos en la carpeta 'models'.")
     st.stop()
 
-# Dropdown para seleccionar el modelo
 selected_model_file = st.selectbox("Selecciona el modelo", model_files)
 
-# Botón para escoger una imagen aleatoria de validación y predecirla
 if st.button("Obtener imagen aleatoria y predecir"):
-    # a) Seleccionar una imagen aleatoria del conjunto de validación
-    valid_samples = valid_loader.dataset.samples  # lista de (ruta, clase)
+    valid_samples = valid_loader.dataset.samples
     rand_index = random.choice(range(len(valid_samples)))
     image_path, _ = valid_samples[rand_index]
     
-    # Cargar la imagen con PIL
     image = Image.open(image_path).convert("RGB")
     st.image(image, caption=f"Imagen aleatoria: {os.path.basename(image_path)}", width=300)
 
-    # Preprocesamiento consistente con tu entrenamiento
-    # (en valid_loader, usas transforms.Resize y transforms.ToTensor)
     transform = transforms.Compose([
         transforms.Resize((img_size, img_size)),
         transforms.ToTensor()
     ])
-    input_tensor = transform(image).unsqueeze(0)  # añadir batch dimension
+    input_tensor = transform(image).unsqueeze(0)
 
-    # Configurar el dispositivo (GPU si está disponible)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     st.write(f"Usando dispositivo: {device}")
 
-    # Extraer nombre del modelo y la arquitectura
     model_identifier = os.path.splitext(selected_model_file)[0]
     arch_name = selected_model_file.split("-")[0]
     if arch_name not in torchvision.models.list_models(module=torchvision.models):
         st.error(f"No se encontró la arquitectura '{arch_name}' en torchvision.models.")
         st.stop()
 
-    # Cargar arquitectura base con pesos (o pretrained=True)
-    base_model = torchvision.models.__dict__[arch_name](weights="DEFAULT")
+    if("regnet" in model_identifier):
+        weights="IMAGENET1K_SWAG_E2E_V1"
+    else:
+        weights="DEFAULT"
+
+    base_model = torchvision.models.__dict__[arch_name](weights=weights)
     my_trained_model = CNN(base_model, num_classes)
     my_trained_model.to(device)
 
-    # Cargar los pesos entrenados
     model_weights = load_model_weights(model_identifier, device=device)
     my_trained_model.load_state_dict(model_weights)
     my_trained_model.eval()
 
-    # b) Predecir SOLO ESA IMAGEN con tu método predict_ImageOnly
     input_tensor = input_tensor.to(device)
     predicted_labels = my_trained_model.predict_ImageOnly(input_tensor)
     predicted_index = predicted_labels[0]

@@ -19,3 +19,10 @@ print(torch.version.cuda)
 print(torch.backends.cudnn.enabled)
 print(torch.cuda.is_available())
 ```
+## Modelos probados
+
+- Resnet50
+- resnext101_32x8d
+- resnext101_64x4d
+- regnet_y_32gf
+- regnet_y_128gf
