@@ -127,13 +127,37 @@ if uploaded_file is not None:
             predicted_index = predicted_labels[0]
             predicted_label = classnames[predicted_index]
 
-            # Mostrar resultado
+            with torch.no_grad():
+                output = my_trained_model(input_tensor)  # Salida de la red
+                probabilities = torch.nn.functional.softmax(output, dim=1)  # Convertir a probabilidades
+                probs = probabilities.squeeze().cpu().numpy()  # Convertir a numpy para mostrar
+
+            # Mostrar la predicción final
             st.markdown(f"""
             <div style='background-color: #f1f8f4; padding: 20px; border-radius: 10px; border-left: 5px solid #4CAF50; margin-top: 20px;'>
                 <h4 style='color: #2e7d32;'>Resultado de Clasificación:</h4>
                 <p style='font-size: 20px;'>La imagen ha sido clasificada como: <strong>{predicted_label}</strong></p>
             </div>
             """, unsafe_allow_html=True)
+
+            # Mostrar las probabilidades de todas las clases
+            class_probabilities = dict(zip(classnames, probs))
+
+            st.markdown("""
+                <div style="border: 1px dashed #4CAF50; padding: 15px; margin-top: 20px; margin-bottom: 20px; border-radius: 8px;">
+                    <h5 style="margin-top: 10px; margin-bottom: 10px; color: #2e7d32; text-align: center;">Probabilidades de cada clase:</h5>
+            """, unsafe_allow_html=True)
+
+
+            # Ordenar las probabilidades de mayor a menor
+            sorted_class_probabilities = sorted(class_probabilities.items(), key=lambda x: x[1], reverse=True)
+
+            # Mostrar cada clase y su probabilidad dentro del recuadro
+            for class_name, prob in sorted_class_probabilities:
+                st.markdown(f"**{class_name}:** {prob * 100:.2f}%", unsafe_allow_html=True)
+
+            # Cerrar el recuadro
+            st.markdown("</div>", unsafe_allow_html=True)
 
 # Footer fijo
 st.markdown("""
