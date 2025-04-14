@@ -32,12 +32,11 @@ Este proyecto **entrena** diferentes **Redes Neuronales Convolucionales (CNN)** 
    pip install -r requirements.txt
    ```
 
-3. **(Opcional) Ajustar .gitignore**  
-   Si necesitas ignorar archivos sensibles o pesados, agrégalos en `.gitignore`.
-
 > **Importante**:  
 > - Si deseas entrenar en GPU, asegúrate de instalar **CUDA** y la versión adecuada de **Torch**/`torchvision`.  
-> - Algunos modelos superan 100MB; si no se encuentran en la carpeta `models/`, podría requerirse descargarlos aparte (por ejemplo, desde Drive).
+> - Algunos modelos superan 100MB; si no se encuentran en la carpeta `models/`, podría requerirse descargarlos aparte.
+[Carpeta de Drive con los modelos](https://drive.google.com/drive/folders/1-9ZGXn6zHftPIvnO7t1JfCHSlHR5p2DT?usp=sharing)
+
 
 ---
 
@@ -61,9 +60,8 @@ DeepLearning-ImageClassification/
 │   ├─ app_DragAndDrop.py      # App Streamlit para clasificar imágenes
 │   └─ utils/
 │       ├─ cnn.py              # Clases y funciones para la CNN
-│       └─ ...
+│       └─ wandb/              # Directorio creado por Weights & Biases (con logs)
 │
-├─ wandb/                      # Directorio creado por Weights & Biases (con logs)
 ├─ README.md
 ├─ requirements.txt
 └─ .gitignore
