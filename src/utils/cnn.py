@@ -206,7 +206,8 @@ class CNN(nn.Module):
         os.makedirs(os.path.dirname('../models/'), exist_ok=True)
 
         # Full path to the model
-        filename = os.path.join('../models', filename)
+        CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+        filename = os.path.join(CURRENT_DIR,"../../models", filename)
 
         # Save the model
         torch.save(self.state_dict(), filename+'.pt')
@@ -280,7 +281,8 @@ def load_model_weights(filename: str, device: torch.device = torch.device('cpu')
             filename: Name of the file to load the model.
         """
         # Full path to the model
-        filename = os.path.join('../models', filename)
+        CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+        filename = os.path.join(CURRENT_DIR,"../../models", filename)
 
         # Load the model
         state_dict = torch.load(filename+'.pt', map_location=device)

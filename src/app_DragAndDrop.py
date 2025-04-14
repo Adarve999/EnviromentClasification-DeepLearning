@@ -21,7 +21,9 @@ def image_to_base64(image):
 st.set_page_config(page_title="🧠 Clasificador de Imágenes (Drag & Drop)", layout="wide")
 
 # Cargar y mostrar la imagen de encabezado en la esquina superior derecha
-header_image = Image.open("../image/universidad-pontificia-comillas-icai-icade-logo.jpg")
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGE_PATH = os.path.join(CURRENT_DIR, "../image/icaiLogo.jpg")
+header_image = Image.open(IMAGE_PATH)
 
 # Usar st.markdown con estilo CSS para posicionar la imagen en la parte superior derecha
 st.markdown("""
@@ -50,8 +52,8 @@ st.markdown("""
 <br> 
 """, unsafe_allow_html=True)
 
-train_dir = '../data/training'
-valid_dir = '../data/validation'
+train_dir = os.path.join(CURRENT_DIR, "../data/training")
+valid_dir = os.path.join(CURRENT_DIR, '../data/validation')
 batch_size = 32
 img_size = 224
 
@@ -64,10 +66,10 @@ train_loader, valid_loader, num_classes = load_data(
 classnames = train_loader.dataset.classes
 
 # Carpeta de modelos
-MODELS_DIR = "../models"
+MODELS_DIR = os.path.join(CURRENT_DIR,"../models")
 model_files = [f for f in os.listdir(MODELS_DIR) if f.endswith(".pt") or f.endswith(".pth")]
 if not model_files:
-    st.error("No se encontraron modelos en la carpeta 'models'.")
+    st.error("No se encontraron modelos en la carpeta 'models'. Descargalos aquí: https://drive.google.com/drive/folders/1-9ZGXn6zHftPIvnO7t1JfCHSlHR5p2DT?usp=sharing")
     st.stop()
 
 # Barra lateral para seleccionar el modelo
