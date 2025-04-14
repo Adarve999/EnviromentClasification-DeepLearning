@@ -29,9 +29,7 @@ cd machineLearning_II
 ## 2. Crea un entorno virtual e instala las dependencias
 
 ```bash
-conda create --name <entorno> python=3.12
-conda activate <entorno>
-pip install -r requirements.txt
+conda env create -f environment.yml
 ```
 
 ## 3 Entrenamiento o reutilizar modelos guardados en Google Drive
