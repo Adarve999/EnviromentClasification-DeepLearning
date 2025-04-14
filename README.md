@@ -90,7 +90,6 @@ La siguiente tabla resume algunos resultados de distintos modelos, con sus époc
 | regnet_y_32gf       |     10 | 0,0001        |               0 |           71,00% |                 73,00% |
 | regnet_y_32gf       |     10 | 0,0001        |               5 |           86,70% |                 94,70% |
 | regnet_y_32gf       |     30 | 0,0001        |               7 |           91,90% |                 94,40% |
-| regnet_y_128gf      |     10 | 0,0001        |               0 |           84,00% |                 73,00% |
 
 Como se observa, **ResNeXt** y **RegNet** en configuraciones avanzadas suelen obtener mejor rendimiento, si bien depende de la cantidad de datos y de las capas descongeladas
 
