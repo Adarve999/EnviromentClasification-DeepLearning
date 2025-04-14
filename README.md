@@ -17,22 +17,24 @@ Este proyecto **entrena** diferentes **Redes Neuronales Convolucionales (CNN)** 
 
 ---
 
-## Ejecución Local Desde Cero
+# Ejecución Local Desde Cero
 
-### 1. Clona el repositorio
+## 1. Clona el repositorio
 
 ```bash
 git clone https://github.com/Adarve999/machineLearning_II.git
 cd machineLearning_II
 ```
 
-### 2. Crea un entorno virtual e instala las dependencias
+## 2. Crea un entorno virtual e instala las dependencias
 
 ```bash
 conda create --name <entorno> python=3.12
 conda activate <entorno>
 pip install -r requirements.txt
 ```
+
+## 3 Entrenamiento o reutilizar modelos guardados en Google Drive
 
 ### 3.a Entrena un modelo
 
@@ -61,7 +63,7 @@ Para utilizarlos:
 1. Descarga los archivos `.pt` necesarios.
 2. Colócalos en la carpeta `models/` de este repositorio.
 
-### 4. Lanza la app de clasificación con Streamlit
+## 4. Lanza la app de clasificación con Streamlit
 
 Una vez entrenado (o descargado) un modelo:
 
@@ -75,7 +77,7 @@ streamlit run src/app_DragAndDrop.py
 
 ---
 
-## Estructura de Carpetas
+# Estructura de Carpetas
 
 ```
 DeepLearning-ImageClassification/
@@ -104,7 +106,7 @@ DeepLearning-ImageClassification/
 
 ---
 
-## Resultados y Métricas
+# Resultados y Métricas
 
 La siguiente tabla resume algunos resultados de distintos modelos, con sus épocas, tasa de aprendizaje, capas descongeladas y exactitudes (Train y Validación). Estos valores pueden variar según el dataset y la configuración final:
 
