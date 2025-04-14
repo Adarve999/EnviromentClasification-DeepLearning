@@ -10,33 +10,69 @@ Este proyecto **entrena** diferentes **Redes Neuronales Convolucionales (CNN)** 
    Se entrenó la IA para predecir múltiples ambientes. Los datos se encuentran en la carpeta `data`, organizada en subdirectorios para entrenamiento y validación.
 
 2. **App con Streamlit**  
-   El proyecto incluye una **app con Streamlit** que, de forma amigable, permite subir una imagen y clasificarla usando cualquiera de los modelos disponibles, mostrando un top 5 de probabilidades y la probabilidad de acierto.
+   El proyecto incluye una **app con Streamlit** que, de forma amigable, permite subir una imagen y clasificarla usando cualquiera de los modelos disponibles.
 
 3. **Monitoreo con Weights & Biases**  
    Todos los entrenamientos y sus métricas se reportan a W&B, facilitando la comparación de modelos, arquitecturas, épocas y otros hiperparámetros.
 
 ---
 
-## Requerimientos Previos
+## Ejecución Local Desde Cero
 
-1. **Clonar el repositorio**  
-   ```bash
-   git clone https://github.com/Adarve999/machineLearning_II.git
-   cd machineLearning_II
-   ```
+### 1. Clona el repositorio
 
-2. **Crear un entorno virtual & instalar librerías**  
-   ```bash
-   python -m venv <entorno>
-   <entorno>/Scripts/activate       # o source <entorno>/bin/activate en Linux/Mac
-   pip install -r requirements.txt
-   ```
+```bash
+git clone https://github.com/Adarve999/machineLearning_II.git
+cd machineLearning_II
+```
 
-> **Importante**:  
-> - Si deseas entrenar en GPU, asegúrate de instalar **CUDA** y la versión adecuada de **Torch**/`torchvision`.  
-> - Algunos modelos superan 100MB; si no se encuentran en la carpeta `models/`, podría requerirse descargarlos aparte.
+### 2. Crea un entorno virtual e instala las dependencias
+
+```bash
+conda create --name <entorno> python=3.12
+conda activate <entorno>
+pip install -r requirements.txt
+```
+
+### 3.a Entrena un modelo
+
+```bash
+python src/train_model.py
+```
+
+1. Carga pesos preentrenados.
+2. Entrena en `data/training`, validando en `data/validation`.
+3. Reporta métricas a W&B (si lo configuras) y guarda el mejor modelo en `models/`.
+
+#### Opciones de entrenamiento
+
+- **Learning Rate**: Se solicita en consola; por defecto 1e-4.  
+- **Capas descongeladas**: También se ingresa en consola; por defecto 0.  
+- **Número de épocas**: Si no se ingresa, por defecto 1.
+
+### 3.b Coger un modelo preentrenado de la carpeta de Google Drive
+
+Debido a que algunos de los modelos entrenados superan el límite de 100 MB impuesto por GitHub, se han subido a una carpeta de Google Drive para facilitar su descarga. Puedes acceder a todos los modelos en el siguiente enlace:
+
 [Carpeta de Drive con los modelos](https://drive.google.com/drive/folders/1-9ZGXn6zHftPIvnO7t1JfCHSlHR5p2DT?usp=sharing)
 
+Para utilizarlos:
+
+1. Descarga los archivos `.pt` o `.pth` necesarios.
+2. Colócalos en la carpeta `models/` de este repositorio.
+3. Asegúrate de que el nombre de cada archivo coincida con el esperado en tu script de predicción o entrenamiento.
+
+### 4. Lanza la app de clasificación con Streamlit
+
+Una vez entrenado (o descargado) un modelo:
+
+```bash
+streamlit run src/app_DragAndDrop.py
+```
+
+1. Elige el modelo en el panel lateral.  
+2. Sube la imagen.  
+3. Se realiza la clasificación y se muestra la clase predicha.
 
 ---
 
@@ -69,43 +105,9 @@ DeepLearning-ImageClassification/
 
 ---
 
-## Entrenamiento de Modelos
-
-Para entrenar un modelo, ajusta los **hiperparámetros** (épocas, LR, capas descongeladas) en el script o desde la consola. Luego:
-
-```bash
-python src/train_model.py
-```
-
-- Se cargan los pesos preentrenados (p. ej., ImageNet).
-- Se entrena en `data/training`, validando en `data/validation`.
-- Se reportan métricas a W&B y se guarda el mejor modelo en la carpeta `models/`.
-
-**Opciones de entrenamiento**  
-- **Learning Rate**: Se puede ingresar en consola.  
-- **Capas descongeladas**: También se especifican al inicio, por defecto 0.  
-- **Número de épocas**: Preguntado al usuario, con un valor por defecto si no ingresa nada.
-
----
-
-## Predicción con Streamlit
-
-Para lanzar la app:
-
-```bash
-streamlit run src/app_DragAndDrop.py
-```
-
-1. Selecciona el modelo en el panel lateral.  
-2. Sube una imagen (JPG, PNG…).  
-3. El script aplica las transformaciones necesarias y ejecuta la clasificación.  
-4. Muestra la clase predicha.
-
----
-
 ## Resultados y Métricas
 
-A continuación, la **tabla con algunos resultados** de modelos entrenados, con sus épocas, tasa de aprendizaje, capas descongeladas y exactitudes (Train y Validación). Estos porcentajes son orientativos y dependen del dataset y configuraciones finales:
+La siguiente tabla resume algunos resultados de distintos modelos, con sus épocas, tasa de aprendizaje, capas descongeladas y exactitudes (Train y Validación). Estos valores pueden variar según el dataset y la configuración final:
 
 | Modelo              | Épocas | Learning Rate | Unfrozen Layers | Accuracy (Train) | Accuracy (Validación) |
 |---------------------|-------:|--------------:|----------------:|-----------------:|-----------------------:|
@@ -118,20 +120,7 @@ A continuación, la **tabla con algunos resultados** de modelos entrenados, con 
 | regnet_y_32gf       |     10 | 0,0001        |               0 |           71,00% |                 73,00% |
 | regnet_y_32gf       |     10 | 0,0001        |               5 |           86,70% |                 94,70% |
 | regnet_y_32gf       |     30 | 0,0001        |               7 |           91,90% |                 94,40% |
+| regnet_y_128gf      |     10 | 0,0001        |               0 |           84,00% |                 73,00% |
 
-Como se observa, **ResNeXt** y **RegNet** en configuraciones avanzadas suelen obtener mejor rendimiento, aunque depende del conjunto de datos y la cantidad de capas descongeladas.
-
----
-
-## Uso con GPU
-
-Si quieres entrenar con GPU, asegúrate de:
-
-```bash
-conda install cudatoolkit
-# o pip install torch==<version>+cu117 -f https://download.pytorch.org/whl/cu117
-```
-
-Revisa la compatibilidad de CUDA con tu versión de PyTorch. De lo contrario, se ejecutará en **CPU** y tomará más tiempo.
-
+Como se observa, **ResNeXt** y **RegNet** en configuraciones avanzadas suelen obtener mejor rendimiento, si bien depende de la cantidad de datos y de las capas descongeladas
 ---
