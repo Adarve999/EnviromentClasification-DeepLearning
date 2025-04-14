@@ -58,9 +58,8 @@ Debido a que algunos de los modelos entrenados superan el límite de 100 MB impu
 
 Para utilizarlos:
 
-1. Descarga los archivos `.pt` o `.pth` necesarios.
+1. Descarga los archivos `.pt` necesarios.
 2. Colócalos en la carpeta `models/` de este repositorio.
-3. Asegúrate de que el nombre de cada archivo coincida con el esperado en tu script de predicción o entrenamiento.
 
 ### 4. Lanza la app de clasificación con Streamlit
 
