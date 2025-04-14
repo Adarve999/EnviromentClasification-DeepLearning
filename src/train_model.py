@@ -49,8 +49,9 @@ def main():
         unfreeze_layer = 0
 
     # Definir directorios y parámetros
-    train_dir = os.path.join("..", "data", "training")
-    valid_dir = os.path.join("..", "data", "validation")
+    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+    train_dir = os.path.join(CURRENT_DIR, "../data/training")
+    valid_dir = os.path.join(CURRENT_DIR, '../data/validation')
     img_size = 224
     batch_size = 32
 
