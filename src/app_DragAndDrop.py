@@ -112,7 +112,7 @@ if uploaded_file is not None:
             else:
                 weights="DEFAULT"
 
-            base_model = torchvision.models.__dict__[arch_name](weights="DEFAULT")
+            base_model = torchvision.models.__dict__[arch_name](weights=weights)
             my_trained_model = CNN(base_model, num_classes)
             my_trained_model.to(device)
 
@@ -140,45 +140,6 @@ if uploaded_file is not None:
             </div>
             """, unsafe_allow_html=True)
 
-            # Mostrar las probabilidades de todas las clases
-            class_probabilities = dict(zip(classnames, probs))
-
-            # Ordenar las probabilidades de mayor a menor
-            sorted_class_probabilities = sorted(class_probabilities.items(), key=lambda x: x[1], reverse=True)
-
-            # Seleccionar solo el top 5
-            top_5_probabilities = sorted_class_probabilities[:5]
-
-            # Normalizar las probabilidades para que sumen 100%
-            total_prob = sum([prob for _, prob in top_5_probabilities])
-            normalized_probabilities = [(class_name, (prob / total_prob) * 100) for class_name, prob in top_5_probabilities]
-
-            # Mostrar las probabilidades dentro de un recuadro
-            st.markdown("""
-                <div style="border: 1px dashed #4CAF50; padding: 15px; margin-top: 20px; margin-bottom: 20px; border-radius: 8px;">
-                    <h5 style="margin-top: 10px; margin-bottom: 10px; color: #2e7d32; text-align: center;">Probabilidades de cada clase:</h5>
-                    <p style="text-align: center; font-size: 16px;">(Top 5)</p>
-            """, unsafe_allow_html=True)
-
-            # Mostrar las probabilidades normalizadas dentro del recuadro
-            for class_name, prob in normalized_probabilities:
-                st.markdown(f"**{class_name}:** {prob:.2f}%", unsafe_allow_html=True)
-
-            # Cerrar el recuadro
-            st.markdown("</div>", unsafe_allow_html=True)
-
-            # Mostrar la probabilidad de acierto (probabilidad de la clase predicha)
-            predicted_class = predicted_label
-            predicted_prob = probs[classnames.index(predicted_class)]
-
-            st.markdown(f"""
-                <div style="border: 1px solid #4CAF50; padding: 15px; margin-top: 20px; margin-bottom: 20px; border-radius: 8px;">
-                    <h5 style="color: #2e7d32; text-align: center;">Probabilidad de acierto:</h5>
-                    <p style="font-size: 20px; text-align: center;">La probabilidad de acierto para la clase predicha ({predicted_class}) es: <strong>{predicted_prob * 100:.2f}%</strong></p>
-                </div>
-            """, unsafe_allow_html=True)
-    
-
 # Footer fijo
 st.markdown("""
     <style>
@@ -188,7 +149,7 @@ st.markdown("""
             width: 100%;
             background-color: #f0f2f6;
             color: #6c757d;
-            text-align: center;
+            text-align: left;
             padding: 10px;
             font-size: 14px;
             border-top: 1px solid #dee2e6;
