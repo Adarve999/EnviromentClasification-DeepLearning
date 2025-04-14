@@ -77,35 +77,6 @@ streamlit run src/app_DragAndDrop.py
 
 ---
 
-# Estructura de Carpetas
-
-```
-DeepLearning-ImageClassification/
-├─ data/
-│   ├─ training/
-│   │   ├─ class1/
-│   │   ├─ class2/
-│   └─ validation/
-│       ├─ class1/
-│       ├─ class2/
-│
-├─ models/
-│   ├─ (aquí se guardan los archivos .pt o .pth con los pesos entrenados)
-│
-├─ src/
-│   ├─ train_model.py          # Script principal de entrenamiento
-│   ├─ app_DragAndDrop.py      # App Streamlit para clasificar imágenes
-│   └─ utils/
-│       ├─ cnn.py              # Clases y funciones para la CNN
-│       └─ wandb/              # Directorio creado por Weights & Biases (con logs)
-│
-├─ README.md
-├─ requirements.txt
-└─ .gitignore
-```
-
----
-
 # Resultados y Métricas
 
 La siguiente tabla resume algunos resultados de distintos modelos, con sus épocas, tasa de aprendizaje, capas descongeladas y exactitudes (Train y Validación). Estos valores pueden variar según el dataset y la configuración final:
