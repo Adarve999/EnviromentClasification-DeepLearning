@@ -91,6 +91,21 @@ La siguiente tabla resume algunos resultados de distintos modelos, con sus époc
 | regnet_y_32gf       |     10 | 0,0001        |               5 |           86,70% |                 94,70% |
 | regnet_y_32gf       |     30 | 0,0001        |               7 |           91,90% |                 94,40% |
 
-Como se observa, **ResNeXt** y **RegNet** en configuraciones avanzadas suelen obtener mejor rendimiento, si bien depende de la cantidad de datos y de las capas descongeladas
+A partir de las métricas presentadas en la tabla, se pueden extraer varias conclusiones:
+
+1. **Eficacia de ResNeXt y RegNet:**  
+   Los modelos **ResNeXt** (especialmente con configuraciones 32x8d y 64x4d) y **RegNet** (en configuraciones con más capas descongeladas) suelen obtener mejores resultados de exactitud, tanto en entrenamiento como en validación, superando en varios puntos porcentuales a ResNet50.
+
+2. **Importancia de descongelar capas:**  
+   Al comparar, por ejemplo, el modelo **resnet50** con 0 capas descongeladas (80%–80%) frente a **resnet50** con 5 capas descongeladas (86%–87%), se observa un aumento significativo en la exactitud. Esto indica que **ajustar capas internas** (unfreeze) puede permitir al modelo aprender mejor las características específicas del dataset.
+
+3. **Mayor número de épocas no siempre significa mayor exactitud:**  
+   En la familia **ResNeXt101_32x8d**, se ven resultados para 100 y 200 épocas con (casi) la misma validación (~92%), mientras que con apenas 30 épocas y 13 capas descongeladas sube a ~93,6%. Esto sugiere que la **calidad del ajuste** (qué capas se descongelan y con qué LR) puede ser más determinante que simplemente entrenar más tiempo.
+
+4. **Aprendizaje efectivo cuando se combina buena arquitectura + capas descongeladas:**  
+   Modelos como **resnext101_64x4d** con 9 capas descongeladas logran un 93,4% en training y 94,2% en validación, lo que demuestra la eficacia de descongelar parte de la red y elegir una arquitectura con alta cardinalidad.
+
+5. **RegNet mejora significativamente con más capas descongeladas y más épocas:**  
+   Pasar de 0 capas descongeladas (71%–73%) a 5 capas (86,7%–94,7%) o 7 capas (91,9%–94,4%) muestra un salto grande en rendimiento, confirmando que la estrategia de ajuste incide mucho en la exactitud final.
 
 ---
