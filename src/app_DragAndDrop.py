@@ -21,7 +21,7 @@ def image_to_base64(image):
 st.set_page_config(page_title="🧠 Clasificador de Imágenes (Drag & Drop)", layout="wide")
 
 # Cargar y mostrar la imagen de encabezado en la esquina superior derecha
-header_image = Image.open("universidad-pontificia-comillas-icai-icade-logo.jpg")
+header_image = Image.open("../image/universidad-pontificia-comillas-icai-icade-logo.jpg")
 
 # Usar st.markdown con estilo CSS para posicionar la imagen en la parte superior derecha
 st.markdown("""
@@ -64,7 +64,7 @@ train_loader, valid_loader, num_classes = load_data(
 classnames = train_loader.dataset.classes
 
 # Carpeta de modelos
-MODELS_DIR = "models"
+MODELS_DIR = "../models"
 model_files = [f for f in os.listdir(MODELS_DIR) if f.endswith(".pt") or f.endswith(".pth")]
 if not model_files:
     st.error("No se encontraron modelos en la carpeta 'models'.")

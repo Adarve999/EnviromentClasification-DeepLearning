@@ -7,15 +7,17 @@ import torch.nn as nn
 import torch.optim as optim
 import wandb
 import datetime
-from utils.cnn import CNN, load_data
+from utils.cnn import CNN, load_data, load_model_weights
 from torch.optim.lr_scheduler import OneCycleLR
 
 def main():
+    # Mostrar modelos disponibles en torchvision
     available_models = torchvision.models.list_models(module=torchvision.models)
     print("Modelos disponibles:")
     for model_name in available_models:
         print(" -", model_name)
 
+    # Pedir nombre del modelo
     selected_model = input("\nIngrese el nombre del modelo a utilizar: ").strip()
     if selected_model not in available_models:
         print(f"\nEl modelo '{selected_model}' no se encontró en la lista de modelos disponibles.")
@@ -24,40 +26,69 @@ def main():
     chosen_model = torchvision.models.__dict__[selected_model](weights="DEFAULT")
     print(f"\nModelo '{selected_model}' cargado correctamente.")
 
+    # Pedir learning rate al usuario, con default 1e-4
+    try:
+        lr_input = input("Ingrese el learning rate (por defecto 1e-4): ").strip()
+        if lr_input == "":
+            learning_rate = 1e-4
+        else:
+            learning_rate = float(lr_input)
+    except ValueError:
+        print("Valor del learning rate inválido. Se utilizará 1e-4 por defecto.")
+        learning_rate = 1e-4
+    
+    # Pedir número de capas a descongelar, con default 0
+    try:
+        unfreeze_input = input("Ingrese la cantidad de capas a 'descongelar' (por defecto 0): ").strip()
+        if unfreeze_input == "":
+            unfreeze_layer = 0
+        else:
+            unfreeze_layer = int(unfreeze_input)
+    except ValueError:
+        print("Valor inválido de capas a descongelar. Se utilizará 0 por defecto.")
+        unfreeze_layer = 0
+
+    # Definir directorios y parámetros
     train_dir = os.path.join("..", "data", "training")
     valid_dir = os.path.join("..", "data", "validation")
-    # Por ejemplo, ResNet requiere 224x224
-    # Por ejemplo, Inception requiere 299×299
-    # Por ejemplo, EfficientNet requiere 384×384
     img_size = 224
-    learning_rate = 1e-4
-    unfreeze_layer = 7
     batch_size = 32
 
-    train_loader, valid_loader, num_classes = load_data(train_dir, valid_dir, batch_size=batch_size, img_size=img_size)
+    # Cargar datos
+    train_loader, valid_loader, num_classes = load_data(
+        train_dir, 
+        valid_dir, 
+        batch_size=batch_size, 
+        img_size=img_size
+    )
     print(f"\nSe detectaron {num_classes} clases en el dataset.")
 
-    model = CNN(chosen_model, num_classes,unfreezed_layers=unfreeze_layer)
+    # Crear modelo CNN con unfreeze_layer
+    model = CNN(chosen_model, num_classes, unfreezed_layers=unfreeze_layer)
     
+    # Configurar dispositivo
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"\nUsando dispositivo: {device}")
     model = model.to(device)
     
+    # Definir optimizer y loss
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.CrossEntropyLoss()
 
+    # Pedir número de épocas
     try:
         epochs = int(input("\nIngrese el número de épocas para el entrenamiento: "))
     except ValueError:
-        print("Valor de época inválido. Se utilizará 1 época por defecto.")
+        print("Valor de épocas inválido. Se utilizará 1 época por defecto.")
         epochs = 1
 
+    # Inicializar wandb
     run_name = f"{selected_model}_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}"
     wandb.init(
         entity="machinelearningicai2025",
         project="Weight&Bias",
         name=run_name,
-        config={"model": selected_model, "epochs": epochs, "lr": learning_rate}
+        config={"model": selected_model, "epochs": epochs, "lr": learning_rate, "unfreeze_layer": unfreeze_layer}
     )
 
     print("\nIniciando entrenamiento...\n")
