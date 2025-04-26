@@ -109,3 +109,23 @@ A partir de las métricas presentadas en la tabla, se pueden extraer varias conc
    Pasar de 0 capas descongeladas (71%–73%) a 5 capas (86,7%–94,7%) o 7 capas (91,9%–94,4%) muestra un salto grande en rendimiento, confirmando que la estrategia de ajuste incide mucho en la exactitud final.
 
 ---
+
+# Authors
+
+- Rubén Adarve Pérez
+- Marta Rodríguez Hebles
+- Maria Valvanera Gil de Biedma
+- Blanca Sayas Ladaga
+
+Please use this bibtex if you want to cite this repository (master branch) in your publications:
+
+```
+@misc{EnviromentClasification-DeepLearning,
+  author       = {Rubén Adarve Pérez, Marta Rodríguez Hebles, Maria Valvanera Gil de Biedma, Blanca Sayas Ladaga},
+  title        = {Deep Learning App: Clasificador de Entornos},
+  year         = {2025},
+  publisher    = {GitHub},
+  journal      = {GitHub repository},
+  howpublished = {\url{<https://github.com/Adarve999/EnviromentClasification-DeepLearning}}>,
+}
+```
