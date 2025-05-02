@@ -1,6 +1,6 @@
 # Clasificador de Entornos
 
-Creación de una **IA** capaz de recibir una imagen de entrada y clasificarla según su entorno o contexto (por ejemplo, `Kitchen`, `Office`, etc.).  
+Creación de una **IA** capaz de recibir una imagen de entrada y clasificarla según su entorno o contexto (por ejemplo, `Kitchen`, `Office`, `Bedroom`, etc.).  
 
 Este proyecto **entrena** diferentes **Redes Neuronales Convolucionales (CNN)** a partir de **modelos preentrenados** (ResNet, ResNeXt, RegNet, etc.), y aprovecha **Weights & Biases (W&B)** para registrar las métricas de entrenamiento de cada modelo.
 
@@ -24,11 +24,11 @@ Ya puedes probar nuestra app directamente desde el navegador sin necesidad de cl
 📌 Hemos desplegado una **demo funcional** con un modelo que alcanza aproximadamente **94% de accuracy** en validación, entrenado con la arquitectura `resnext101_32x8d` y 13 capas descongeladas.
 
 🔗 **Accede aquí**:
-👉 [https://enviroments-clasification.streamlit.app](https://enviroments-clasification.streamlit.app/)
+👉 [https://environments-clasification.streamlit.app](https://environments-clasification.streamlit.app/)
 
 1. Sube una imagen desde tu equipo.
 2. Selecciona el modelo preentrenado.
-3. Obtén la predicción del entorno (`Kitchen`, `Office`, etc.) al instante.
+3. Obtén la predicción del entorno (`Kitchen`, `Office`, `Bedroom`, etc.) al instante.
 
 ---
 
@@ -37,8 +37,8 @@ Ya puedes probar nuestra app directamente desde el navegador sin necesidad de cl
 ## 1. Clona el repositorio
 
 ```bash
-git clone https://github.com/Adarve999/EnviromentClasification-DeepLearning.git
-cd EnviromentClasification-DeepLearning
+git clone https://github.com/Adarve999/EnvironmentClasification-DeepLearning.git
+cd EnvironmentClasification-DeepLearning
 ```
 
 ## 2. Crea un entorno virtual e instala las dependencias
@@ -136,12 +136,12 @@ A partir de las métricas presentadas en la tabla, se pueden extraer varias conc
 Please use this bibtex if you want to cite this repository (master branch) in your publications:
 
 ```
-@misc{EnviromentClasification-DeepLearning,
+@misc{EnvironmentClasification-DeepLearning,
   author       = {Rubén Adarve Pérez, Marta Rodríguez Hebles, Maria Valvanera Gil de Biedma, Blanca Sayas Ladaga},
   title        = {Deep Learning App: Clasificador de Entornos},
   year         = {2025},
   publisher    = {GitHub},
   journal      = {GitHub repository},
-  howpublished = {\url{<https://github.com/Adarve999/EnviromentClasification-DeepLearning}}>,
+  howpublished = {\url{<https://github.com/Adarve999/EnvironmentClasification-DeepLearning}}>,
 }
 ```
