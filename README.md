@@ -30,6 +30,7 @@ cd EnviromentClasification-DeepLearning
 
 ```bash
 conda env create -f env_dev.yaml
+conda env activate dl_clasification
 ```
 
 ## 3 Entrenamiento o reutilizar modelos guardados en Google Drive
