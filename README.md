@@ -29,7 +29,7 @@ cd EnviromentClasification-DeepLearning
 ## 2. Crea un entorno virtual e instala las dependencias
 
 ```bash
-conda env create -f environment.yml
+conda env create -f env_dev.yaml
 ```
 
 ## 3 Entrenamiento o reutilizar modelos guardados en Google Drive
