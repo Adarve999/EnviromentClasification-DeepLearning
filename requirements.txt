@@ -104,6 +104,7 @@ threadpoolctl==3.6.0
 tifffile==2025.3.13
 tokenizers==0.21.1
 toml==0.10.2
+torch==2.5.1
 torchaudio==2.5.1
 torchvision==0.20.1
 tornado==6.4.2
@@ -112,8 +113,6 @@ traitlets==5.14.3
 transformers==4.51.0
 ttach==0.0.3
 tzdata==2025.2
-ultralytics==8.3.103
-ultralytics-thop==2.0.14
 wandb==0.19.8
 watchdog==6.0.0
 wcwidth==0.2.13
