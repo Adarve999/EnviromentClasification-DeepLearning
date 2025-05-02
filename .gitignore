@@ -175,3 +175,6 @@ cython_debug/
 
 # PreTrained models
 *.pt
+
+# weight & biass folder
+src/wandb/*
