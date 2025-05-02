@@ -22,8 +22,8 @@ Este proyecto **entrena** diferentes **Redes Neuronales Convolucionales (CNN)** 
 ## 1. Clona el repositorio
 
 ```bash
-git clone https://github.com/Adarve999/machineLearning_II.git
-cd machineLearning_II
+git clone https://github.com/Adarve999/EnviromentClasification-DeepLearning.git
+cd EnviromentClasification-DeepLearning
 ```
 
 ## 2. Crea un entorno virtual e instala las dependencias
