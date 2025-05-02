@@ -17,6 +17,21 @@ Este proyecto **entrena** diferentes **Redes Neuronales Convolucionales (CNN)** 
 
 ---
 
+## 🎯 Demo Online
+
+Ya puedes probar nuestra app directamente desde el navegador sin necesidad de clonar ni configurar nada.
+
+📌 Hemos desplegado una **demo funcional** con un modelo que alcanza aproximadamente **94% de accuracy** en validación, entrenado con la arquitectura `resnext101_32x8d` y 13 capas descongeladas.
+
+🔗 **Accede aquí**:
+👉 [https://enviroments-clasification.streamlit.app](https://enviroments-clasification.streamlit.app/)
+
+1. Sube una imagen desde tu equipo.
+2. Selecciona el modelo preentrenado.
+3. Obtén la predicción del entorno (`Kitchen`, `Office`, etc.) al instante.
+
+---
+
 # Ejecución Local Desde Cero
 
 ## 1. Clona el repositorio

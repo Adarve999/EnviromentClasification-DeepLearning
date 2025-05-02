@@ -48,9 +48,29 @@ st.markdown("""
         <li>📂 <strong>Arrastra y suelta</strong> o selecciona una imagen (<code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>).</li>
         <li>🚀 Haz clic en el botón para obtener la <strong>clase predicha</strong>.</li>
     </ol>
+    <hr>
+<h4>🏷️ Possible classes / Clases posibles:</h4>
+    <ul>
+        <li>Bedroom / Dormitorio</li>
+        <li>Coast / Costa</li>
+        <li>Forest / Bosque</li>
+        <li>Highway / Autopista</li>
+        <li>Industrial / Zona industrial</li>
+        <li>Inside city / Interior urbano</li>
+        <li>Kitchen / Cocina</li>
+        <li>Living room / Salón</li>
+        <li>Montain / Montaña</li>
+        <li>Office / Oficina</li>
+        <li>Open country / Campo abierto</li>
+        <li>Store / Tienda</li>
+        <li>Street / Calle</li>
+        <li>Suburb / Suburbio</li>
+        <li>Tall building / Edificio alto</li>
+    </ul>
 </div>
-<br> 
+<br>
 """, unsafe_allow_html=True)
+
 
 train_dir = os.path.join(CURRENT_DIR, "../data/training")
 valid_dir = os.path.join(CURRENT_DIR, '../data/validation')
