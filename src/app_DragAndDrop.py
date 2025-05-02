@@ -156,7 +156,7 @@ if uploaded_file is not None:
 
             # Mostrar la predicción final
             st.markdown(f"""
-            <div style='background-color: #f1f8f4; padding: 20px; border-radius: 10px; border-left: 5px solid #4CAF50; margin-top: 20px;'>
+            <div style='background-color: #ffffffb3; padding: 20px; border-radius: 10px; border-left: 5px solid #4CAF50; margin-top: 20px;'>
                 <h4 style='color: #2e7d32;'>Resultado de Clasificación:</h4>
                 <p style='font-size: 20px;'>La imagen ha sido clasificada como: <strong>{predicted_label}</strong></p>
             </div>
