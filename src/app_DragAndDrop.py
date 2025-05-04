@@ -66,7 +66,7 @@ class_translations = {
     "Inside city": "Interior urbano",
     "Kitchen": "Cocina",
     "Living room": "Salón",
-    "Montain": "Montaña",
+    "Montain": "Montania",
     "Office": "Oficina",
     "Open country": "Campo abierto",
     "Store": "Tienda",
@@ -85,9 +85,18 @@ for idx, class_name in enumerate(class_folders):
     image_path = image_files[0]
     img = Image.open(image_path).convert("RGB")
 
+    buffered = BytesIO()
+    img.save(buffered, format="JPEG")
+    img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+
     col = cols[idx % 3]
     with col:
-        st.image(img, caption=f"{class_name} / {class_translations.get(class_name, '')}", use_column_width=True)
+        col.markdown(f"""
+        <div style="text-align: center;">
+            <img src="data:image/jpeg;base64,{img_base64}" style="width: 224px; height: 224px; object-fit: cover; border-radius: 10px; border: 1px solid #ccc;"/>
+            <div style="margin-top: 5px; font-weight: bold;">{class_name} / {class_translations.get(class_name, '')}</div>
+        </div>
+        """, unsafe_allow_html=True)
         
 train_dir = os.path.join(CURRENT_DIR, "../data/training")
 valid_dir = os.path.join(CURRENT_DIR, '../data/validation')
