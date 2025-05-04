@@ -51,9 +51,9 @@ st.markdown("""
     </ol>
     <hr>
     <h4>🏷️ Clases disponibles (con ejemplos visuales):</h4>
-</div>
 """, unsafe_allow_html=True)
 
+# Muestra de clases con imágenes
 classes_dir = os.path.join(CURRENT_DIR, "../data/validation")
 class_folders = sorted(os.listdir(classes_dir))
 
@@ -66,7 +66,7 @@ class_translations = {
     "Inside city": "Interior urbano",
     "Kitchen": "Cocina",
     "Living room": "Salón",
-    "Montain": "Montania",
+    "Montain": "Montaña",
     "Office": "Oficina",
     "Open country": "Campo abierto",
     "Store": "Tienda",
@@ -75,7 +75,8 @@ class_translations = {
     "Tall building": "Edificio alto"
 }
 
-cols = st.columns(3)
+# Mostrar imágenes en 5 columnas
+cols = st.columns(5)
 for idx, class_name in enumerate(class_folders):
     image_path_pattern = os.path.join(classes_dir, class_name, "*")
     image_files = sorted(glob.glob(image_path_pattern))
@@ -89,14 +90,16 @@ for idx, class_name in enumerate(class_folders):
     img.save(buffered, format="JPEG")
     img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-    col = cols[idx % 3]
+    col = cols[idx % 5]
     with col:
         col.markdown(f"""
-        <div style="text-align: center;">
-            <img src="data:image/jpeg;base64,{img_base64}" style="width: 224px; height: 224px; object-fit: cover; border-radius: 10px; border: 1px solid #ccc;"/>
-            <div style="margin-top: 5px; font-weight: bold;">{class_name} / {class_translations.get(class_name, '')}</div>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="data:image/jpeg;base64,{img_base64}" style="width: 160px; height: 160px; object-fit: cover; border-radius: 10px; border: 1px solid #ccc;"/>
+            <div style="margin-top: 5px; font-weight: bold;">{class_name}<br/><span style="font-size: 12px; color: gray;">{class_translations.get(class_name, '')}</span></div>
         </div>
         """, unsafe_allow_html=True)
+
+st.markdown("</div><br>", unsafe_allow_html=True)
         
 train_dir = os.path.join(CURRENT_DIR, "../data/training")
 valid_dir = os.path.join(CURRENT_DIR, '../data/validation')
