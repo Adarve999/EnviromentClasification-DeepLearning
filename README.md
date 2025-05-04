@@ -142,15 +142,15 @@ A partir de las métricas presentadas en la tabla, se pueden extraer varias conc
 - Maria Valvanera Gil de Biedma
 - Blanca Sayas Ladaga
 
-Please use this bibtex if you want to cite this repository (master branch) in your publications:
+Please use this bibtex if you want to cite this repository (main branch) in your publications:
 
-```
+```bibtex
 @misc{EnvironmentClasification-DeepLearning,
   author       = {Rubén Adarve Pérez, Marta Rodríguez Hebles, Maria Valvanera Gil de Biedma, Blanca Sayas Ladaga},
   title        = {Deep Learning App: Clasificador de Entornos},
   year         = {2025},
   publisher    = {GitHub},
   journal      = {GitHub repository},
-  howpublished = {\url{<https://github.com/Adarve999/EnvironmentClasification-DeepLearning}}>,
+  howpublished = {\url{https://github.com/Adarve999/EnvironmentClasification-DeepLearning}},
 }
 ```
