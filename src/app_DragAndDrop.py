@@ -54,9 +54,11 @@ st.markdown("""
 
 st.markdown("""
 <br>
-<div style='border: 2px dotted black; padding: 20px; border-radius: 10px; background-color: transparent;'>
-    <h4>🏷️ Clases disponibles (con ejemplos visuales):</h4>
-</div>
+<h4>🏷️ Clases disponibles (con ejemplos visuales):</h4>
+<p style="font-size: 15px; color: #444; margin-top: -10px;">
+    Los modelos fueron entrenados con imágenes similares a las mostradas abajo. 
+    Si subes una imagen muy distinta (por perspectiva, iluminación o contenido), la predicción puede no ser precisa.
+</p>
 """, unsafe_allow_html=True)
 
 # Muestra de clases con imágenes
