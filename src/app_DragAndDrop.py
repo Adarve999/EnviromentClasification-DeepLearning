@@ -74,7 +74,7 @@ class_translations = {
     "Inside city": "Interior urbano",
     "Kitchen": "Cocina",
     "Living room": "Salón",
-    "Montain": "Montain",
+    "Mountain": "Montaña", 
     "Office": "Oficina",
     "Open country": "Campo abierto",
     "Store": "Tienda",
