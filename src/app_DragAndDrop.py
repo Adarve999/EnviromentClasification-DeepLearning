@@ -9,6 +9,7 @@ import streamlit as st
 import base64
 from io import BytesIO
 from PIL import Image
+import glob
 
 # Función para convertir imagen PIL a base64
 def image_to_base64(image):
@@ -49,29 +50,45 @@ st.markdown("""
         <li>🚀 Haz clic en el botón para obtener la <strong>clase predicha</strong>.</li>
     </ol>
     <hr>
-<h4>🏷️ Possible classes / Clases posibles:</h4>
-    <ul>
-        <li>Bedroom / Dormitorio</li>
-        <li>Coast / Costa</li>
-        <li>Forest / Bosque</li>
-        <li>Highway / Autopista</li>
-        <li>Industrial / Zona industrial</li>
-        <li>Inside city / Interior urbano</li>
-        <li>Kitchen / Cocina</li>
-        <li>Living room / Salón</li>
-        <li>Montain / Montaña</li>
-        <li>Office / Oficina</li>
-        <li>Open country / Campo abierto</li>
-        <li>Store / Tienda</li>
-        <li>Street / Calle</li>
-        <li>Suburb / Suburbio</li>
-        <li>Tall building / Edificio alto</li>
-    </ul>
+    <h4>🏷️ Clases disponibles (con ejemplos visuales):</h4>
 </div>
-<br>
 """, unsafe_allow_html=True)
 
+classes_dir = os.path.join(CURRENT_DIR, "../data/validation")
+class_folders = sorted(os.listdir(classes_dir))
 
+class_translations = {
+    "Bedroom": "Dormitorio",
+    "Coast": "Costa",
+    "Forest": "Bosque",
+    "Highway": "Autopista",
+    "Industrial": "Zona industrial",
+    "Inside city": "Interior urbano",
+    "Kitchen": "Cocina",
+    "Living room": "Salón",
+    "Montain": "Montaña",
+    "Office": "Oficina",
+    "Open country": "Campo abierto",
+    "Store": "Tienda",
+    "Street": "Calle",
+    "Suburb": "Suburbio",
+    "Tall building": "Edificio alto"
+}
+
+cols = st.columns(3)
+for idx, class_name in enumerate(class_folders):
+    image_path_pattern = os.path.join(classes_dir, class_name, "*")
+    image_files = sorted(glob.glob(image_path_pattern))
+    if not image_files:
+        continue
+
+    image_path = image_files[0]
+    img = Image.open(image_path).convert("RGB")
+
+    col = cols[idx % 3]
+    with col:
+        st.image(img, caption=f"{class_name} / {class_translations.get(class_name, '')}", use_column_width=True)
+        
 train_dir = os.path.join(CURRENT_DIR, "../data/training")
 valid_dir = os.path.join(CURRENT_DIR, '../data/validation')
 batch_size = 32
