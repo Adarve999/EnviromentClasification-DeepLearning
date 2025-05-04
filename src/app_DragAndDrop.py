@@ -49,8 +49,14 @@ st.markdown("""
         <li>📂 <strong>Arrastra y suelta</strong> o selecciona una imagen (<code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>).</li>
         <li>🚀 Haz clic en el botón para obtener la <strong>clase predicha</strong>.</li>
     </ol>
-    <hr>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<br>
+<div style='border: 2px dotted black; padding: 20px; border-radius: 10px; background-color: transparent;'>
     <h4>🏷️ Clases disponibles (con ejemplos visuales):</h4>
+</div>
 """, unsafe_allow_html=True)
 
 # Muestra de clases con imágenes
@@ -66,7 +72,7 @@ class_translations = {
     "Inside city": "Interior urbano",
     "Kitchen": "Cocina",
     "Living room": "Salón",
-    "Montain": "Montaña",
+    "Montain": "Montain",
     "Office": "Oficina",
     "Open country": "Campo abierto",
     "Store": "Tienda",
@@ -75,7 +81,6 @@ class_translations = {
     "Tall building": "Edificio alto"
 }
 
-# Mostrar imágenes en 5 columnas
 cols = st.columns(5)
 for idx, class_name in enumerate(class_folders):
     image_path_pattern = os.path.join(classes_dir, class_name, "*")
@@ -98,8 +103,6 @@ for idx, class_name in enumerate(class_folders):
             <div style="margin-top: 5px; font-weight: bold;">{class_name}<br/><span style="font-size: 12px; color: gray;">{class_translations.get(class_name, '')}</span></div>
         </div>
         """, unsafe_allow_html=True)
-
-st.markdown("</div><br>", unsafe_allow_html=True)
         
 train_dir = os.path.join(CURRENT_DIR, "../data/training")
 valid_dir = os.path.join(CURRENT_DIR, '../data/validation')
