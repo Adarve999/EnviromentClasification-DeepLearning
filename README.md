@@ -1,3 +1,12 @@
+<p align="center">
+  <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/python-3.12+-3776AB?logo=python"></a>
+  <a href="https://pytorch.org/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-2.5-E34F26?logo=pytorch"></a>
+  <a href="https://streamlit.io/"><img alt="Streamlit" src="https://img.shields.io/badge/Streamlit-1.x-FF4B4B?logo=streamlit"></a>
+  <a href="https://wandb.ai/"><img alt="Weights & Biases" src="https://img.shields.io/badge/W%26B-tracking-orange?logo=wandb"></a>
+  <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green.svg"></a>
+</p>
+
+
 # Clasificador de Entornos
 
 Creación de una **IA** capaz de recibir una imagen de entrada y clasificarla según su entorno o contexto (por ejemplo, `Kitchen`, `Office`, `Bedroom`, etc.).  
